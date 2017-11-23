@@ -204,8 +204,11 @@ var _getItemAt,
 
 		img.style.width = w + 'px';
 		img.style.height = h + 'px';
-		item.container.style.width = w + 'px';
-		item.container.style.height = h + 'px';
+
+		if (item.container) {
+			item.container.style.width = w + 'px';
+			item.container.style.height = h + 'px';
+		}
 	},
 	_appendImagesPool = function() {
 
