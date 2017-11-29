@@ -1,4 +1,4 @@
-/*! PhotoSwipe - v4.1.2 - 2017-11-23
+/*! PhotoSwipe - v4.1.2 - 2017-11-29
 * http://photoswipe.com
 * Copyright (c) 2017 Dmitry Semenov; */
 (function (root, factory) { 
@@ -3454,12 +3454,12 @@ _registerModule('DesktopZoom', {
  * history.js:
  *
  * - Back button to close gallery.
- * 
+ *
  * - Unique URL for each slide: example.com/&pid=1&gid=3
  *   (where PID is picture index, and GID and gallery index)
- *   
+ *
  * - Switch URL when slides change.
- * 
+ *
  */
 
 
@@ -3511,7 +3511,7 @@ var _historyUpdateTimeout,
 			if(!vars[i]) {
 				continue;
 			}
-			var pair = vars[i].split('=');	
+			var pair = vars[i].split('=');
 			if(pair.length < 2) {
 				continue;
 			}
@@ -3548,7 +3548,7 @@ var _historyUpdateTimeout,
 			_hashAnimCheckTimeout = setTimeout(_updateHash, 500);
 			return;
 		}
-		
+
 		if(_hashChangedByScript) {
 			clearTimeout(_hashChangeTimeout);
 		} else {
@@ -3586,8 +3586,8 @@ var _historyUpdateTimeout,
 				_windowLoc.hash = newHash;
 			}
 		}
-		
-		
+
+
 
 		_historyChanged = true;
 		_hashChangeTimeout = setTimeout(function() {
@@ -3597,11 +3597,11 @@ var _historyUpdateTimeout,
 
 
 
-	
+
 
 _registerModule('History', {
 
-	
+
 
 	publicMethods: {
 		initHistory: function() {
@@ -3625,7 +3625,7 @@ _registerModule('History', {
 				_initialHash = _initialHash.split('&gid=')[0];
 				_initialHash = _initialHash.split('?gid=')[0];
 			}
-			
+
 
 			_listen('afterChange', self.updateURL);
 			_listen('unbindEvents', function() {
@@ -3637,23 +3637,19 @@ _registerModule('History', {
 				_hashReseted = true;
 				if(!_closedFromURL) {
 
-					if(_urlChangedOnce) {
-						history.back();
+					// https://github.com/dimsemenov/PhotoSwipe/issues/700
+					if(_initialHash) {
+						_windowLoc.hash = _initialHash;
 					} else {
+						if (_supportsPushState) {
 
-						if(_initialHash) {
-							_windowLoc.hash = _initialHash;
+							// remove hash from url without refreshing it or scrolling to top
+							history.pushState('', document.title,  _windowLoc.pathname + _windowLoc.search );
 						} else {
-							if (_supportsPushState) {
-
-								// remove hash from url without refreshing it or scrolling to top
-								history.pushState('', document.title,  _windowLoc.pathname + _windowLoc.search );
-							} else {
-								_windowLoc.hash = '';
-							}
+							_windowLoc.hash = '';
 						}
 					}
-					
+
 				}
 
 				_cleanHistoryTimeouts();
@@ -3676,9 +3672,9 @@ _registerModule('History', {
 				_currentItemIndex = _parseItemIndexFromURL().pid;
 			});
 
-			
 
-			
+
+
 			var index = _initialHash.indexOf('pid=');
 			if(index > -1) {
 				_initialHash = _initialHash.substring(0, index);
@@ -3686,14 +3682,14 @@ _registerModule('History', {
 					_initialHash = _initialHash.slice(0, -1);
 				}
 			}
-			
+
 
 			setTimeout(function() {
 				if(_isOpen) { // hasn't destroyed yet
 					framework.bind(window, 'hashchange', self.onHashChange);
 				}
 			}, 40);
-			
+
 		},
 		onHashChange: function() {
 
@@ -3709,15 +3705,15 @@ _registerModule('History', {
 				self.goTo( _parseItemIndexFromURL().pid );
 				_hashChangedByHistory = false;
 			}
-			
+
 		},
 		updateURL: function() {
 
-			// Delay the update of URL, to avoid lag during transition, 
+			// Delay the update of URL, to avoid lag during transition,
 			// and to not to trigger actions like "refresh page sound" or "blinking favicon" to often
-			
+
 			_cleanHistoryTimeouts();
-			
+
 
 			if(_hashChangedByHistory) {
 				return;
@@ -3729,7 +3725,7 @@ _registerModule('History', {
 				_historyUpdateTimeout = setTimeout(_updateHash, 800);
 			}
 		}
-	
+
 	}
 });
 
