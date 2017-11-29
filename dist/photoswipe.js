@@ -2951,7 +2951,7 @@ _registerModule('Controller', {
 				_options.loop = false; // disable loop if less then 3 items
 			}
 
-			_listen('imageLoadComplete', function(diff) {
+			_listen('beforeChange', function(diff) {
 
 				var p = _options.preload,
 					isNext = diff === null ? true : (diff >= 0),
